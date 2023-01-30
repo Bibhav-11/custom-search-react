@@ -1,24 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useRef } from 'react';
+
 
 function App() {
+  const [query, setQuery] = useState('');
+  const [items, setItems] = useState([]);
+  const InputRef = useRef();
+
+  function onSubmit(e) {
+    e.preventDefault();
+    const value = InputRef.current.value;
+    setItems(prev => [...prev, value]);
+    InputRef.current.value = "";
+  }
+
+
+  const filteredItems = items.filter(item => {
+    return item.toLowerCase().includes(query.toLowerCase());
+  })
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      Search: <input value={query} onChange={(e) => setQuery(e.target.value)} type='search' />
+      <br/>
+      <br/>
+      <form onSubmit={onSubmit}>
+        Input: <input ref={InputRef} type='text' /> <button type='submit'>Add</button>
+      </form>
+
+      {
+        filteredItems.map(item => {
+          return <div>{item}</div>
+        })
+      }
+    </>
+
   );
 }
 
